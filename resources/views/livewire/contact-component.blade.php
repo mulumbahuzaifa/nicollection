@@ -37,14 +37,17 @@
                                     <h2 class="title">
                                         Send us a Message!
                                     </h2>
-                                    <form action="#" class="stelina-contact-fom">
+                                    @if (Session::has('message'))
+                                    <div class="alert alert-success" role="alert">{{ Session::get('message') }}</div>
+                                    @endif
+                                    <form action="#" wire:submit.prevent="sendMessage" class="stelina-contact-fom">
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <p>
                                                     <span class="form-label">Your Name *</span>
                                                     <span class="form-control-wrap your-name">
 														<input title="your-name" type="text" name="your-name" size="40"
-                                                               class="form-control form-control-name">
+                                                               class="form-control form-control-name" wire:model="name" required>
 													</span>
                                                 </p>
                                             </div>
@@ -55,7 +58,7 @@
 													</span>
                                                     <span class="form-control-wrap your-email">
 														<input title="your-email" type="email" name="your-email" size="40"
-                                                               class="form-control form-control-email">
+                                                               class="form-control form-control-email" wire:model="email" required>
 													</span>
                                                 </p>
                                             </div>
@@ -66,7 +69,7 @@
                                                     <span class="form-label">Phone</span>
                                                     <span class="form-control-wrap your-phone">
 														<input title="your-phone" type="text" name="your-phone"
-                                                               class="form-control form-control-phone">
+                                                               class="form-control form-control-phone" wire:model="phone" required>
 													</span>
                                                 </p>
                                             </div>
@@ -88,7 +91,7 @@
 											</span>
                                             <span class="wpcf7-form-control-wrap your-message">
 												<textarea title="your-message" name="your-message" cols="40" rows="9"
-                                                          class="form-control your-textarea"></textarea>
+                                                          class="form-control your-textarea" wire:model="comment" required></textarea>
 											</span>
                                         </p>
                                         <p>
@@ -106,7 +109,7 @@
                                         <div class="info">
                                             <div class="item address">
                                                 <span class="icon">
-													
+
 												</span>
                                                 <span class="text">
 													 Kampala - Uganda
@@ -114,7 +117,7 @@
                                             </div>
                                             <div class="item phone">
                                                 <span class="icon">
-													
+
 												</span>
                                                 <span class="text">
 													(+256) 755-849-551
@@ -122,7 +125,7 @@
                                             </div>
                                             <div class="item email">
                                                 <span class="icon">
-													
+
 												</span>
                                                 <span class="text">
 													nicollectionug.gmail.com
@@ -132,17 +135,17 @@
                                         <div class="socials">
                                             <a href="#" class="social-item" target="_blank">
 												<span class="icon fa fa-facebook">
-													
+
 												</span>
                                         </a>
                                             <a href="#" class="social-item" target="_blank">
 												<span class="icon fa fa-twitter-square">
-													
+
 												</span>
                                         </a>
                                             <a href="#" class="social-item" target="_blank">
 												<span class="icon fa fa-instagram">
-													
+
 												</span>
                                         </a>
                                         </div>

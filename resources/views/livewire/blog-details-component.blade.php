@@ -10,10 +10,10 @@
                                     <a href="/">Home</a>
                                 </li>
                                 <li class="trail-item">
-                                    <a href="#">Our blog</a>
+                                    <a href="{{ route('blog') }}">Our blog</a>
                                 </li>
                                 <li class="trail-item trail-end active">
-                                    How to up your game with Nicollection.
+                                    {{ $blog->title }}
                                 </li>
                             </ul>
                         </div>
@@ -24,36 +24,35 @@
                         <div class="site-main">
                             <div class="post-item">
                                 <div class="post-format">
-                                    <a href="{{route('blog')}}">
-                                        <img src="assets/images/blog1.jpg" alt="img">
+                                    <a href="{{ route('blog.details', ['slug' => $blog->slug]) }}">
+                                        <img src="{{ asset('image/blogs') }}/{{ $blog->image }}" alt="{{ $blog->title }}">
                                     </a>
                                 </div>
                                 <div class="post-infor">
                                     <div class="category-blog">
-                                        <a href="#">LIFE STYLE</a>
+                                        <a href="#">{{ $blog->category }}</a>
                                     </div>
                                     <h3 class="post-title">
-                                        <a href="{{route('blogdetails')}}">How to up your game with Nicollection.</a>
+                                        <a href="{{ route('blog.details', ['slug' => $blog->slug]) }}">{{ $blog->title }}</a>
                                     </h3>
                                     <div class="main-info-post">
                                         <p>
-                                            At Nicollection, we understand the significance of a captivating fragrance. Our collection of scents is designed not just to complement your style, but to elevate it to new heights. Whether you're heading to a boardroom meeting or a social gathering,
-                                             here's how incorporating Nicollection scents into your routine can up your game:
-                                        <p>
+                                            {{ $blog->description }}
+                                        {{-- <p>
                                             <br>1. Confidence Booster: a scent that makes you feel confident and empowered. When you feel good about how you smell, it reflects in your demeanor and interactions.
 
                                          <br>2. Signature Scent: Find a signature scent that becomes synonymous with your presence. Consistency in scent creates a memorable impression and reinforces your personal brand.....
-                                        </p> 
+                                        </p> --}}
                                         <blockquote>
                                             <p>
                                                Let your fragrance do the talking
                                             </p>
                                             <div class="author">
                                                 <span class="name">
-                                                    Michelle
+                                                    Nicole
                                                 </span>
                                                 <span class="desc">
-                                                    Senior Stylist,Nicollection
+                                                    CEO ,Nicollection
                                                 </span>
                                             </div>
                                         </blockquote>
@@ -64,29 +63,31 @@
                                 <h3 class="custom_blog_title">
                                     Related Articles
                                 </h3>
+                                @if ($related_blogs->isNotEmpty())
                                 <div class="blog-slider style-1 owl-slick" data-slick='{"variableWidth":true, "autoplay":false, "autoplaySpeed":1000, "arrows":true, "dots":false, "infinite":true, "speed":800, "rows":1}' data-responsive='[{"breakpoint":"1200","settings":{"slidesToShow":1,"variableWidth":false }}]'>
+                                    @foreach ($related_blogs as $related_blog)
                                     <div class="blog-item">
                                         <div class="post-format">
                                             <a href="{{route('blog')}}">
-                                                <img src="assets/images/blog2.jpg" alt="img">
+                                                <img src="{{ asset('image/blogs') }}/{{ $related_blog->image }}" alt="{{ $related_blog->title }}">
                                             </a>
                                         </div>
                                         <div class="post-info">
                                             <div class="category-blog">
-                                                <a href="#">DISCOUNT</a>
+                                                <a href="#">{{ $related_blog->category }}</a>
                                             </div>
                                             <h3 class="post-title">
-                                                <a href="{{route('blogdetails')}}">Discount Time <span>[...]</span></a>
+                                                <a href="{{ route('blog.details', ['slug' => $related_blog->slug]) }}">{{ $related_blog->title }}<span>[...]</span></a>
                                             </h3>
                                             <div class="main-info-post">
                                                 <p class="des">
-                                                    Its time for generosity ,do not miss out on our discounted deals
+                                                    {{ $related_blog->description }}
                                                 </p>
                                             </div>
                                             <div class="author-view">
                                                 <div class="author">
                                                     <div class="avt">
-                                                        <img src="assets/images/avt-blog1.png" alt="img">
+                                                        <img src="{{ asset('assets/images/avt-blog1.png') }}" alt="img">
                                                     </div>
                                                     <h3 class="name">
                                                         Nicole
@@ -113,58 +114,14 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="blog-item ">
-                                        <div class="post-format ">
-                                            <a href="{{route('blog')}}">
-                                                <img src="assets/images/blog3.jpg" alt="img">
-                                            </a>
-                                        </div>
-                                        <div class="post-info ">
-                                            <div class="category-blog">
-                                                <a href="#">LIFE STYLE</a>
-                                            </div>
-                                            <h3 class="post-title">
-                                                <a href="{{route('blogdetails')}}">New Collection Alert <span>[...]</span></a>
-                                            </h3>
-                                            <div class="main-info-post">
-                                                <p class="des">
-                                                    Its time for generosity ,do not miss out on our discounted deals.
-                                                </p>
-                                            </div>
-                                            <div class="author-view">
-                                                <div class="author">
-                                                    <div class="avt">
-                                                        <img src="assets/images/avt-blog1.png" alt="img">
-                                                    </div>
-                                                    <h3 class="name">
-                                                        Adam Smith
-                                                    </h3>
-                                                </div>
-                                                <div class="review">
-                                                    <div class="view">
-                                                        <span class="icon-view">
-                                                            <i class="fa fa-eye" aria-hidden="true"></i>
-                                                        </span>
-                                                        <span class="count">
-                                                            631
-                                                        </span>
-                                                    </div>
-                                                    <div class="s-comments">
-                                                        <span class="icon-cmt">
-                                                            <i class="fa fa-commenting" aria-hidden="true"></i>
-                                                        </span>
-                                                        <span class="count">
-                                                            82
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @endforeach
                                 </div>
+                                @else
+                                    <p>No related Blogs</p>
+                                @endif
                                 <div class="main-info-post">
                                     <p class="des">
-                                    
+
                                     </p>
                                     <p class="des">
                                 Let your fragrance do the talking
@@ -202,12 +159,12 @@
                             <div class="view-share">
                                 <div class="author-view">
                                     <div class="author">
-                                        {{-- <div class="avt">
-                                            <img src="assets/images/avt-blog1.png" alt="img">
-                                        </div> --}}
-                                        {{-- <h3 class="name">
-                                            Adam Smith
-                                        </h3> --}}
+                                        <div class="avt">
+                                            <img src="{{ asset('assets/images/avt-blog1.png') }}" alt="img">
+                                        </div>
+                                        <h3 class="name">
+                                            Nicole
+                                        </h3>
                                     </div>
                                     <div class="review">
                                         <div class="view">
@@ -248,7 +205,7 @@
                                             <i class="icon fa fa-file-image-o" aria-hidden="true"></i>
                                             <i class="icon fa fa-paperclip" aria-hidden="true"></i>
                                             <i class="icon fa fa-smile-o" aria-hidden="true"></i>
-                                            <button class="submit button">POST A COMMENT</button>		
+                                            <button class="submit button">POST A COMMENT</button>
                                         </span>
                                     </p>
                                 </form>
@@ -258,7 +215,7 @@
                                             <div class="author-view">
                                                 <div class="author">
                                                     <div class="avt">
-                                                        <img src="assets/images/avt-blog1.png" alt="img">
+                                                        <img src="{{ asset('assets/images/avartar.png') }}" alt="img">
                                                     </div>
                                                     <h3 class="name">
                                                         Oluwa
@@ -293,14 +250,14 @@
                                         </div>
                                         <ul class="children">
                                             <li>
-                                                {{-- <div class="comment-item">
+                                                <div class="comment-item">
                                                     <div class="author-view">
                                                         <div class="author">
                                                             <div class="avt">
-                                                                <img src="assets/images/avt-blog1.png" alt="img">
+                                                                <img src="{{ asset('assets/images/avt-blog1.png') }}" alt="img">
                                                             </div>
                                                             <h3 class="name">
-                                                                Samuel Godi
+                                                                Nicole
                                                             </h3>
                                                         </div>
                                                         <div class="date-reply-comment">
@@ -312,7 +269,7 @@
                                                     <div class="comment-body">
                                                         <div class="comment-content">
                                                             <p>
-                                                                Ut pellentesque gravida justo non rhoncus. Nunc ullamcorper tortor id aliquet luctus. Proin varius aliquam consequat.Curabitur a commodo diam, vitae pellentesque urna.
+                                                                Your taste is always good
                                                             </p>
                                                         </div>
                                                         <div class="comment-reply-link">
@@ -330,13 +287,13 @@
                                                             </span>
                                                         </div>
                                                     </div>
-                                                </div> --}}
+                                                </div>
                                             </li>
                                         </ul>
                                     </li>
                                 </ul>
                             </div>
-                            <div class="pagination clearfix style1">
+                            {{-- <div class="pagination clearfix style1">
                                 <div class="nav-link">
                                     <a href="#" class="page-numbers"><i class="icon fa fa-angle-left" aria-hidden="true"></i></a>
                                     <a href="#" class="page-numbers">1</a>
@@ -344,7 +301,7 @@
                                     <a href="#" class="page-numbers current">3</a>
                                     <a href="#" class="page-numbers"><i class="icon fa fa-angle-right" aria-hidden="true"></i></a>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="sidebar sidebar-single-blog col-lg-3 col-md-4 col-sm-12 col-xs-12">
@@ -403,7 +360,7 @@
                                     {{-- <li>
                                         <input type="checkbox" id="cb6">
                                         <label for="cb6" class="label-text">
-                                            
+
                                         </label>
                                     </li> --}}
                                 </ul>
@@ -411,40 +368,21 @@
                             <div class="widget widget-post">
                                 <h3 class="widgettitle">Popular Articles</h3>
                                 <ul class="stelina-posts">
+                                    @foreach ($l_blogs as $blog)
+
                                     <li class="widget-post-item">
                                         <div class="thumb-blog">
-                                            <img src="assets/images/sidebar-post1.jpg" alt="img">
+                                            <img src="{{ asset('image/blogs') }}/{{ $blog->image }}" alt="{{ $blog->title }}">
                                         </div>
                                         <div class="post-content">
                                             <div class="cat">
-                                                <a href="#">Life Style</a>
+                                                <a href="#">{{ $blog->category }}</a>
                                             </div>
-                                            <h5 class="post-title"><a href="{{route('blogdetails')}}">9 Quicks Tips That Will Change <span>[...]</span></a></h5>
+                                            <h5 class="post-title"><a href="{{ route('blog.details', ['slug' => $blog->slug]) }}">{{ $blog->title }} <span>[...]</span></a></h5>
                                         </div>
                                     </li>
-                                    <li class="widget-post-item">
-                                        <div class="thumb-blog">
-                                            <img src="assets/images/sidebar-post2.jpg" alt="img">
-                                        </div>
-                                        <div class="post-content">
-                                            <div class="cat">
-                                                <a href="#">Look book</a>
-                                            </div>
-                                            <h5 class="post-title"><a href="{{route('blogdetails')}}">9 Quicks Tips That Will Change <span>[...]</span></a></h5>
-                                        </div>
-                                    </li>
-                                    <li class="widget-post-item">
-                                        <div class="thumb-blog">
-                                            <img src="assets/images/sidebar-post3.jpg" alt="img">
-                                        </div>
-                                        <div class="post-content">
-                                            <div class="cat">
-                                                <a href="#">Street Style</a>
-                                            </div>
-                                            <h5 class="post-title"><a href="{{route('blogdetails')}}">9 Quicks Tips That Will Change <span>[...]</span></a></h5>
-                                        </div>
-                                    </li>
-    
+                                    @endforeach
+
                                 </ul>
                             </div>
                             <div class="widget widget-tags">
@@ -491,5 +429,5 @@
             </div>
         </div>
     </div>
-    
+
 </div>

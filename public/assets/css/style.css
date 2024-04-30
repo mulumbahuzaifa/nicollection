@@ -2067,12 +2067,12 @@ table tr:last-child th {
 }
 /* .menu-item:hover{
     font-size: 25px;
-    
+
 } */
 .menu-item a:hover{
     font-size: 18px;
     /* color: #da9100; */
-    
+
 }
 
 .main-menu .menu-item:hover>.submenu {
@@ -13215,4 +13215,11 @@ a:active,
 
 .product-item .product-inner img {
     width: 100%;
+}
+
+.list-inline>li {
+    color: white;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
 }

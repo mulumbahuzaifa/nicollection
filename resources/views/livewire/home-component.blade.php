@@ -103,8 +103,16 @@
                     <h3 class="custommenu-title-blog">
                         Deals Of The Month
                     </h3>
-                    <div class="owl-products owl-slick equal-container nav-center" data-slick='{"autoplay":false, "autoplaySpeed":1000, "arrows":false, "dots":true, "infinite":false, "speed":800, "rows":1}' data-responsive='[{"breakpoint":"2000","settings":{"slidesToShow":4}},{"breakpoint":"1200","settings":{"slidesToShow":3}},{"breakpoint":"992","settings":{"slidesToShow":2}},{"breakpoint":"480","settings":{"slidesToShow":1}}]'>
-                        <div class="product-item style-5">
+                    @php
+                        $witem = Cart::instance('wishlist')->content()->pluck('id');
+                        $citem = Cart::instance('cart')->content()->pluck('id');
+                    @endphp
+                     @if (Session::has('message'))
+                     <div class="alert alert-success" role="alert">{{ Session::get('message') }}</div>
+                     @endif
+                    <div class="owl-products owl-slick equal-container nav-center" wire:ignore data-slick='{"autoplay":false, "autoplaySpeed":1000, "arrows":false, "dots":true, "infinite":false, "speed":800, "rows":1}' data-responsive='[{"breakpoint":"2000","settings":{"slidesToShow":4}},{"breakpoint":"1200","settings":{"slidesToShow":3}},{"breakpoint":"992","settings":{"slidesToShow":2}},{"breakpoint":"480","settings":{"slidesToShow":1}}]'>
+                        @foreach ($featured_products as $featured_product)
+                        <div class="product-item style-5"  wire:key="{{ $featured_product->id }}">
                             <div class="product-inner equal-element">
                                 <div class="product-top">
                                     <div class="flash">
@@ -117,18 +125,27 @@
                                 </div>
                                 <div class="product-thumb">
                                     <div class="thumb-inner">
-                                        <a href="{{route('shop-details')}}">
-                                        <img src="assets/images/product-item-17.jpg" alt="img">
+                                        <a href="#">
+                                        <img src="{{ asset('image/products') }}/{{ $featured_product->image }}" alt="{{ $featured_product->name }}">
                                     </a>
                                         <div class="thumb-group">
                                             <div class="yith-wcwl-add-to-wishlist">
                                                 <div class="yith-wcwl-add-button">
-                                                    <a href="#">Add to Wishlist</a>
+                                                    @if ($witem->contains($featured_product->id))
+                                                    <a href="#" wire:click.prevent="removeFromWishlist({{ $featured_product->id }})" style="color: red">Add to Wishlist</a>
+                                                    @else
+                                                    <a href="#" wire:click.prevent="addToWishlist({{ $featured_product->id }},'{{ $featured_product->name }}',{{ $featured_product->regular_price }})">Add to Wishlist</a>
+                                                    @endif
                                                 </div>
                                             </div>
                                             <a href="#" class="button quick-wiew-button">Quick View</a>
                                             <div class="loop-form-add-to-cart">
-                                                <button class="single_add_to_cart_button button">Add to cart</button>
+                                                @if ($citem->contains($featured_product->id))
+                                                <button type="button" class="single_add_to_cart_button button" style="background-color: rgb(247, 6, 6); padding: 4px;"  wire:click.prevent="removeFromCart({{ $featured_product->id }})">Remove From Cart</button>
+                                                @else
+                                                <button type="button" class="single_add_to_cart_button button" wire:click.prevent="store({{ $featured_product->id }},'{{ $featured_product->name }}',{{ $featured_product->regular_price }})">Add to Cart</button>
+                                                @endif
+                                                {{-- <button class="single_add_to_cart_button button">Add to cart</button> --}}
                                             </div>
                                         </div>
                                     </div>
@@ -138,7 +155,7 @@
                                 </div>
                                 <div class="product-info">
                                     <h5 class="product-name product_title">
-                                        <a href="{{route('shop-details')}}">Creed</a>
+                                        <a href="{{ route('shop-details', ['slug' => $featured_product->slug]) }}">{{ $featured_product->name }}</a>
                                     </h5>
                                     <div class="group-info">
                                         <div class="stars-rating">
@@ -150,302 +167,20 @@
                                             </div>
                                         </div>
                                         <div class="price">
+                                            @if ($featured_product->sale_price)
                                             <del>
-                                            UGX.35,000
-                                        </del>
+                                                    UGx{{ $featured_product->sale_price }}
+                                            </del>
+                                            @endif
                                             <ins>
-                                            UGX.30,000
+                                                UGx{{ $featured_product->regular_price }}
                                         </ins>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="product-item style-5">
-                            <div class="product-inner equal-element">
-                                <div class="product-top">
-                                    <div class="flash sell">
-                                        <span class="onnew">
-												<span class="text">
-													sell
-												</span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="product-thumb">
-                                    <div class="thumb-inner">
-                                        <a href="#">
-                                        <img src="assets/images/product-item-21.jpg" alt="img">
-                                    </a>
-                                        <div class="thumb-group">
-                                            <div class="yith-wcwl-add-to-wishlist">
-                                                <div class="yith-wcwl-add-button">
-                                                    <a href="#">Add to Wishlist</a>
-                                                </div>
-                                            </div>
-                                            <a href="#" class="button quick-wiew-button">Quick View</a>
-                                            <div class="loop-form-add-to-cart">
-                                                <button class="single_add_to_cart_button button">Add to cart</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product-count-down">
-                                        <div class="stelina-countdown" data-y="2021" data-m="9" data-w="2" data-d="30" data-h="20" data-i="60" data-s="60"></div>
-                                    </div>
-                                </div>
-                                <div class="product-info">
-                                    <h5 class="product-name product_title">
-                                        <a href="{{route('shop-details')}}">Coco Chanel</a>
-                                    </h5>
-                                    <div class="group-info">
-                                        <div class="stars-rating">
-                                            <div class="star-rating">
-                                                <span class="star-3"></span>
-                                            </div>
-                                            <div class="count-star">
-                                                (3)
-                                            </div>
-                                        </div>
-                                        <div class="price">
-                                            <del>
-                                            UGX.30,000
-                                        </del>
-                                            <ins>
-                                            UGX.25,000
-                                        </ins>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-item style-5">
-                            <div class="product-inner equal-element">
-                                <div class="product-top">
-                                    <div class="flash">
-                                        <span class="onnew">
-												<span class="text">
-													new
-												</span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="product-thumb">
-                                    <div class="thumb-inner">
-                                        <a href="{{route('shop-details')}}">
-                                        <img src="assets/images/product-item-20.jpg" alt="img">
-                                    </a>
-                                        <div class="thumb-group">
-                                            <div class="yith-wcwl-add-to-wishlist">
-                                                <div class="yith-wcwl-add-button">
-                                                    <a href="#">Add to Wishlist</a>
-                                                </div>
-                                            </div>
-                                            <a href="#" class="button quick-wiew-button">Quick View</a>
-                                            <div class="loop-form-add-to-cart">
-                                                <button class="single_add_to_cart_button button">Add to cart</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product-count-down">
-                                        <div class="stelina-countdown" data-y="2021" data-m="12" data-w="1" data-d="24" data-h="20" data-i="50" data-s="60"></div>
-                                    </div>
-                                </div>
-                                <div class="product-info">
-                                    <h5 class="product-name product_title">
-                                        <a href="{{route('shop-details')}}">Orchid Noir</a>
-                                    </h5>
-                                    <div class="group-info">
-                                        <div class="stars-rating">
-                                            <div class="star-rating">
-                                                <span class="star-3"></span>
-                                            </div>
-                                            <div class="count-star">
-                                                (3)
-                                            </div>
-                                        </div>
-                                        <div class="price">
-                                            <del>
-                                            UGX.40,000
-                                        </del>
-                                            <ins>
-                                            UGX.30,000
-                                        </ins>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-item style-5">
-                            <div class="product-inner equal-element">
-                                <div class="product-top">
-                                    <div class="flash sell">
-                                        <span class="onnew">
-												<span class="text">
-													sell
-												</span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="product-thumb">
-                                    <div class="thumb-inner">
-                                        <a href="#">
-                                        <img src="assets/images/product-item-22.jpg" alt="img">
-                                    </a>
-                                        <div class="thumb-group">
-                                            <div class="yith-wcwl-add-to-wishlist">
-                                                <div class="yith-wcwl-add-button">
-                                                    <a href="#">Add to Wishlist</a>
-                                                </div>
-                                            </div>
-                                            <a href="#" class="button quick-wiew-button">Quick View</a>
-                                            <div class="loop-form-add-to-cart">
-                                                <button class="single_add_to_cart_button button">Add to cart</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product-count-down">
-                                        <div class="stelina-countdown" data-y="2021" data-m="7" data-w="3" data-d="20" data-h="10" data-i="10" data-s="20"></div>
-                                    </div>
-                                </div>
-                                <div class="product-info">
-                                    <h5 class="product-name product_title">
-                                        <a href="{{route('shop-details')}}">Hugo</a>
-                                    </h5>
-                                    <div class="group-info">
-                                        <div class="stars-rating">
-                                            <div class="star-rating">
-                                                <span class="star-3"></span>
-                                            </div>
-                                            <div class="count-star">
-                                                (3)
-                                            </div>
-                                        </div>
-                                        <div class="price">
-                                            <del>
-                                            UGX.40,000
-                                        </del>
-                                            <ins>
-                                            UGX.30,000
-                                        </ins>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-item style-5">
-                            <div class="product-inner equal-element">
-                                <div class="product-top">
-                                    <div class="flash sell">
-                                        <span class="onnew">
-												<span class="text">
-													sell
-												</span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="product-thumb">
-                                    <div class="thumb-inner">
-                                        <a href="#">
-                                        <img src="assets/images/product-item-19.jpg" alt="img">
-                                    </a>
-                                        <div class="thumb-group">
-                                            <div class="yith-wcwl-add-to-wishlist">
-                                                <div class="yith-wcwl-add-button">
-                                                    <a href="#">Add to Wishlist</a>
-                                                </div>
-                                            </div>
-                                            <a href="#" class="button quick-wiew-button">Quick View</a>
-                                            <div class="loop-form-add-to-cart">
-                                                <button class="single_add_to_cart_button button">Add to cart</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product-count-down">
-                                        <div class="stelina-countdown" data-y="2021" data-m="9" data-w="2" data-d="30" data-h="20" data-i="60" data-s="60"></div>
-                                    </div>
-                                </div>
-                                <div class="product-info">
-                                    <h5 class="product-name product_title">
-                                        <a href="{{route('shop-details')}}">Diamond</a>
-                                    </h5>
-                                    <div class="group-info">
-                                        <div class="stars-rating">
-                                            <div class="star-rating">
-                                                <span class="star-3"></span>
-                                            </div>
-                                            <div class="count-star">
-                                                (3)
-                                            </div>
-                                        </div>
-                                        <div class="price">
-                                            <del>
-                                            UGX.65000
-                                        </del>
-                                            <ins>
-                                            UGX.70000
-                                        </ins>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-item style-5">
-                            <div class="product-inner equal-element">
-                                <div class="product-top">
-                                    <div class="flash sell">
-                                        <span class="onnew">
-												<span class="text">
-													sell
-												</span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="product-thumb">
-                                    <div class="thumb-inner">
-                                        <a href="#">
-                                        <img src="assets/images/product-item-18.jpg" alt="img">
-                                    </a>
-                                        <div class="thumb-group">
-                                            <div class="yith-wcwl-add-to-wishlist">
-                                                <div class="yith-wcwl-add-button">
-                                                    <a href="#">Add to Wishlist</a>
-                                                </div>
-                                            </div>
-                                            <a href="#" class="button quick-wiew-button">Quick View</a>
-                                            <div class="loop-form-add-to-cart">
-                                                <button class="single_add_to_cart_button button">Add to cart</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="product-count-down">
-                                        <div class="stelina-countdown" data-y="2021" data-m="9" data-w="2" data-d="30" data-h="20" data-i="60" data-s="60"></div>
-                                    </div>
-                                </div>
-                                <div class="product-info">
-                                    <h5 class="product-name product_title">
-                                        <a href="{{route('shop-details')}}">Winter</a>
-                                    </h5>
-                                    <div class="group-info">
-                                        <div class="stars-rating">
-                                            <div class="star-rating">
-                                                <span class="star-3"></span>
-                                            </div>
-                                            <div class="count-star">
-                                                (3)
-                                            </div>
-                                        </div>
-                                        <div class="price">
-                                            <del>
-                                            UGX.50000
-                                        </del>
-                                            <ins>
-                                            UGX.55000
-                                        </ins>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -458,7 +193,7 @@
                                     <div class="inner">
                                         <div class="banner-content">
                                             <h4 class="stelina-subtitle">
-                                                
+
                                             </h4>
                                             <h3 class="title">From Nicollection</h3>
                                             <div class="description">
@@ -522,70 +257,16 @@
                             <li class="">
                                 <a data-toggle="tab" aria-expanded="true" href="#new_arrivals">New Arrivals </a>
                             </li>
-                            <li class="">
+                            {{-- <li class="">
                                 <a data-toggle="tab" aria-expanded="true" href="#top-rated">Top Rated</a>
-                            </li>
+                            </li> --}}
                         </ul>
                     </div>
                     <div class="tab-container">
                         <div id="bestseller" class="tab-panel active">
                             <div class="stelina-product">
                                 <ul class="row list-products auto-clear equal-container product-grid">
-                                    <li class="product-item  col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash">
-                                                    <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-1.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Blanche Parfume</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX65,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX45,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
+                                    @foreach ($products as $product)
                                     <li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
                                         <div class="product-inner equal-element">
                                             <div class="product-top">
@@ -600,25 +281,32 @@
                                             <div class="product-thumb">
                                                 <div class="thumb-inner">
                                                     <a href="#">
-                                                    <img src="assets/images/product-item-2.jpg" alt="img">
+                                                    <img src="{{ asset('image/products') }}/{{ $product->image }}" alt="{{ $product->name }}">
                                                 </a>
                                                     <div class="thumb-group">
                                                         <div class="yith-wcwl-add-to-wishlist">
                                                             <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
+                                                                @if ($witem->contains($product->id))
+                                                                <a href="#" wire:click.prevent="removeFromWishlist({{ $product->id }})" style="color: red">Add to Wishlist</a>
+                                                                @else
+                                                                <a href="#" wire:click.prevent="addToWishlist({{ $product->id }},'{{ $product->name }}',{{ $product->regular_price }})">Add to Wishlist</a>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                         <a href="#" class="button quick-wiew-button">Quick View</a>
                                                         <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
+                                                              @if ($citem->contains($product->id))
+                                                            <button type="button" class="single_add_to_cart_button button" style="background-color: rgb(247, 6, 6); padding: 4px;"  wire:click.prevent="removeFromCart({{ $product->id }})">Remove From Cart</button>
+                                                            @else
+                                                            <button type="button" class="single_add_to_cart_button button" wire:click.prevent="store({{ $product->id }},'{{ $product->name }}',{{ $product->regular_price }})">Add to Cart</button>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="product-info">
                                                 <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Tuscan Creations</a>
+                                                    <a href="{{ route('shop-details', ['slug' => $product->slug]) }}">{{ $product->name }}</a>
                                                 </h5>
                                                 <div class="group-info">
                                                     <div class="stars-rating">
@@ -630,353 +318,29 @@
                                                         </div>
                                                     </div>
                                                     <div class="price">
+                                                        @if ($product->sale_price)
                                                         <del>
-                                                        UGX 65,000
-                                                    </del>
+                                                                UGx{{ $product->sale_price }}
+                                                        </del>
+                                                        @endif
                                                         <ins>
-                                                        UGX 45,000
-                                                    </ins>
+                                                            UGx{{ $product->regular_price }}
+                                                        </ins>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </li>
-                                    <li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash">
-                                                    <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-3.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Rossa</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 65,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 45,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash sell">
-                                                    <span class="onnew">
-														<span class="text">
-															sell
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-4.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Glorious</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 45,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 25,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item  col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash sell">
-                                                    <span class="onnew">
-														<span class="text">
-															sell
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-5.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">The Alchemist</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 25,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 15,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash">
-                                                    <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-6.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Garden Of Winter </a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 35,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 20,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash">
-                                                    <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-7.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Melody</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 65,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 45,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item  col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash sell">
-                                                    <span class="onnew">
-														<span class="text">
-															sell
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-8.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">You</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 40,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 30,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
+                                    @endforeach
+
                                 </ul>
                             </div>
                         </div>
                         <div id="new_arrivals" class="tab-panel">
                             <div class="stelina-product">
                                 <ul class="row list-products auto-clear equal-container product-grid">
+                                    @foreach ($l_products as $l_product)
+
                                     <li class="product-item  col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
                                         <div class="product-inner equal-element">
                                             <div class="product-top">
@@ -991,17 +355,25 @@
                                             <div class="product-thumb">
                                                 <div class="thumb-inner">
                                                     <a href="#">
-                                                    <img src="assets/images/product-item-9.jpg" alt="img">
+                                                    <img src="{{ asset('image/products') }}/{{ $l_product->image }}" alt="img">
                                                 </a>
                                                     <div class="thumb-group">
                                                         <div class="yith-wcwl-add-to-wishlist">
                                                             <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
+                                                                @if ($witem->contains($l_product->id))
+                                                                <a href="#" wire:click.prevent="removeFromWishlist({{ $l_product->id }})" style="color: red">Add to Wishlist</a>
+                                                                @else
+                                                                <a href="#" wire:click.prevent="addToWishlist({{ $l_product->id }},'{{ $l_product->name }}',{{ $l_product->regular_price }})">Add to Wishlist</a>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                         <a href="#" class="button quick-wiew-button">Quick View</a>
                                                         <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
+                                                            @if ($citem->contains($l_product->id))
+                                                            <button type="button" class="single_add_to_cart_button button" style="background-color: rgb(247, 6, 6); padding: 4px;"  wire:click.prevent="removeFromCart({{ $l_product->id }})">Remove From Cart</button>
+                                                            @else
+                                                            <button type="button" class="single_add_to_cart_button button" wire:click.prevent="store({{ $l_product->id }},'{{ $l_product->name }}',{{ $l_product->regular_price }})">Add to Cart</button>
+                                                            @endif
                                                         </button>
                                                         </div>
                                                     </div>
@@ -1009,7 +381,7 @@
                                             </div>
                                             <div class="product-info">
                                                 <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Royal</a>
+                                                    <a href="{{ route('shop-details', ['slug' => $l_product->slug]) }}">{{ $l_product->name }}</a>
                                                 </h5>
                                                 <div class="group-info">
                                                     <div class="stars-rating">
@@ -1021,406 +393,25 @@
                                                         </div>
                                                     </div>
                                                     <div class="price">
+                                                        @if ($l_product->sale_price)
                                                         <del>
-                                                        UGX 45,000
-                                                    </del>
+                                                                UGx{{ $l_product->sale_price }}
+                                                        </del>
+                                                        @endif
                                                         <ins>
-                                                        UGX 25,000
+                                                            UGx{{ $l_product->regular_price }}
                                                     </ins>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </li>
-                                    <li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash sell">
-                                                    <span class="onnew">
-														<span class="text">
-															sell
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-10.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Patiala</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 55,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 35,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash">
-                                                    <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-11.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Ghost</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 25,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 15,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash">
-                                                    <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-13.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Elixir</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 45,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 35,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item  col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash sell">
-                                                    <span class="onnew">
-														<span class="text">
-															sell
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-14.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Queen Roses</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 35,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 25,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash">
-                                                    <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-15.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Love</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 55,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 35,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash sell">
-                                                    <span class="onnew">
-														<span class="text">
-															sell
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-16.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Boss</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 45,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 40,000SS
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item  col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash">
-                                                    <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-2.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Creations</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 65,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 55,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
+                                    @endforeach
+
                                 </ul>
                             </div>
                         </div>
-                        <div id="top-rated" class="tab-panel">
+                        {{-- <div id="top-rated" class="tab-panel">
                             <div class="stelina-product">
                                 <ul class="row list-products auto-clear equal-container product-grid">
                                     <li class="product-item  col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
@@ -1455,7 +446,7 @@
                                             </div>
                                             <div class="product-info">
                                                 <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Diesel</a>
+                                                    <a href="#">Diesel</a>
                                                 </h5>
                                                 <div class="group-info">
                                                     <div class="stars-rating">
@@ -1478,394 +469,10 @@
                                             </div>
                                         </div>
                                     </li>
-                                    <li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash sell">
-                                                    <span class="onnew">
-														<span class="text">
-															sell
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-12.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Afrique</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 25,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 15,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash">
-                                                    <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-8.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Exotic Diamond</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 30,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 25,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash">
-                                                    <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-4.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Fresh </a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 45,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 35,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item  col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash sell">
-                                                    <span class="onnew">
-														<span class="text">
-															sell
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-9.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Dainty </a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 45,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 35,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash">
-                                                    <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-13.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Magnificent</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 25,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 20,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash sell">
-                                                    <span class="onnew">
-														<span class="text">
-															sell
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-16.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">Florale</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 35,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 25,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="product-item  col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
-                                        <div class="product-inner equal-element">
-                                            <div class="product-top">
-                                                <div class="flash">
-                                                    <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="product-thumb">
-                                                <div class="thumb-inner">
-                                                    <a href="#">
-                                                    <img src="assets/images/product-item-8.jpg" alt="img">
-                                                </a>
-                                                    <div class="thumb-group">
-                                                        <div class="yith-wcwl-add-to-wishlist">
-                                                            <div class="yith-wcwl-add-button">
-                                                                <a href="#">Add to Wishlist</a>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                        <div class="loop-form-add-to-cart">
-                                                            <button class="single_add_to_cart_button button">Add to cart
-                                                        </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="product-info">
-                                                <h5 class="product-name product_title">
-                                                    <a href="{{route('shop-details')}}">The Alchemist</a>
-                                                </h5>
-                                                <div class="group-info">
-                                                    <div class="stars-rating">
-                                                        <div class="star-rating">
-                                                            <span class="star-3"></span>
-                                                        </div>
-                                                        <div class="count-star">
-                                                            (3)
-                                                        </div>
-                                                    </div>
-                                                    <div class="price">
-                                                        <del>
-                                                        UGX 65,000
-                                                    </del>
-                                                        <ins>
-                                                        UGX 45,000
-                                                    </ins>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
+
                                 </ul>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -1936,15 +543,16 @@
                     </h3>
                     <div class="stelina-blog default">
                         <div class="owl-slick equal-container nav-center" data-slick='{"autoplay":false, "autoplaySpeed":1000, "arrows":false, "dots":true, "infinite":true, "speed":800, "rows":1}' data-responsive='[{"breakpoint":"2000","settings":{"slidesToShow":3}},{"breakpoint":"1200","settings":{"slidesToShow":3}},{"breakpoint":"992","settings":{"slidesToShow":2}},{"breakpoint":"768","settings":{"slidesToShow":2}},{"breakpoint":"481","settings":{"slidesToShow":1}}]'>
+                            @foreach ($l_blogs as $blog)
                             <div class="stelina-blog-item equal-element layout1">
                                 <div class="post-thumb">
-                                    <a href="{{route('blog')}}">
-                                    <img src="assets/images/slider-blog-thumb-1.jpg" alt="img">
+                                    <a href="{{ route('blog.details', ['slug' => $blog->slug]) }}">
+                                    <img src="{{ asset('image/blogs') }}/{{ $blog->image }}" alt="{{ $blog->title }}">
                                 </a>
                                     <div class="category-blog">
                                         <ul class="list-category">
                                             <li class="category-item">
-                                                <a href="#">Skincare</a>
+                                                <a href="#">{{  $blog->category }}</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -1974,7 +582,7 @@
                                 <div class="blog-info">
                                     <div class="blog-meta">
                                         <div class="post-date">
-                                            Agust 17, 09:14 am
+                                            {{ $blog->created_at }}
                                         </div>
                                         <span class="view">
 											<i class="icon fa fa-eye" aria-hidden="true"></i>
@@ -1986,199 +594,18 @@
 										</span>
                                     </div>
                                     <h2 class="blog-title">
-                                        <a href="{{route('blog')}}">Nicollection does it best </a>
+                                        <a href="{{ route('blog.details', ['slug' => $blog->slug]) }}">{{  $blog->title }} </a>
                                     </h2>
                                     <div class="main-info-post">
                                         <p class="des">
-                                            Sit tight and let us share some tips on how to apply fragrance
+                                            {{ str_limit(strip_tags($blog->description),150,'...')  }}
                                         </p>
-                                        <a class="readmore" href="{{route('blogdetails')}}">Read more</a>
+                                        <a class="readmore"href="{{ route('blog.details', ['slug' => $blog->slug]) }}">Read more</a>
                                     </div>
                                 </div>
                             </div>
-                            <div class="stelina-blog-item equal-element layout1">
-                                <div class="post-thumb">
-                                    <a href="#">
-                                    <img src="assets/images/slider-blog-thumb-2.jpg" alt="img">
-                                </a>
-                                    <div class="category-blog">
-                                        <ul class="list-category">
-                                            <li class="category-item">
-                                                <a href="#">HOW TO</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="post-item-share">
-                                        <a href="#" class="icon">
-                                        <i class="fa fa-share-alt" aria-hidden="true"></i>
-                                    </a>
-                                        <div class="box-content">
-                                            <a href="#">
-                                            <i class="fa fa-facebook"></i>
-                                        </a>
-                                            <a href="#">
-                                            <i class="fa fa-twitter"></i>
-                                        </a>
-                                            <a href="#">
-                                            <i class="fa fa-google-plus"></i>
-                                        </a>
-                                            <a href="#">
-                                            <i class="fa fa-pinterest"></i>
-                                        </a>
-                                            <a href="#">
-                                            <i class="fa fa-linkedin"></i>
-                                        </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="blog-info">
-                                    <div class="blog-meta">
-                                        <div class="post-date">
-                                            Agust 17, 09:14 am
-                                        </div>
-                                        <span class="view">
-											<i class="icon fa fa-eye" aria-hidden="true"></i>
-											631
-										</span>
-                                        <span class="comment">
-											<i class="icon fa fa-commenting" aria-hidden="true"></i>
-											84
-										</span>
-                                    </div>
-                                    <h2 class="blog-title">
-                                        <a href="{{route('blog')}}">Good scent brings positive vibe</a>
-                                    </h2>
-                                    <div class="main-info-post">
-                                        <p class="des">
-                                            Did you know that a good scent is good for productivity.
-                                        </p>
-                                        <a class="readmore" href="{{route('blogdetails')}}">Read more</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="stelina-blog-item equal-element layout1">
-                                <div class="post-thumb">
-                                    <div class="video-stelina-blog">
-                                        <figure>
-                                            <img src="assets/images/slider-blog-thumb-3.jpg" alt="img" width="370" height="280">
-                                        </figure>
-                                        <a class="quick-install" href="#" data-videosite="vimeo" data-videoid="134060140"></a>
-                                    </div>
-                                    <div class="category-blog">
-                                        <ul class="list-category">
-                                            <li class="category-item">
-                                                <a href="#">VIDEO</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="post-item-share">
-                                        <a href="#" class="icon">
-                                        <i class="fa fa-share-alt" aria-hidden="true"></i>
-                                    </a>
-                                        <div class="box-content">
-                                            <a href="#">
-                                            <i class="fa fa-facebook"></i>
-                                        </a>
-                                            <a href="#">
-                                            <i class="fa fa-twitter"></i>
-                                        </a>
-                                            <a href="#">
-                                            <i class="fa fa-google-plus"></i>
-                                        </a>
-                                            <a href="#">
-                                            <i class="fa fa-pinterest"></i>
-                                        </a>
-                                            <a href="#">
-                                            <i class="fa fa-linkedin"></i>
-                                        </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="blog-info">
-                                    <div class="blog-meta">
-                                        <div class="post-date">
-                                            Agust 17, 09:14 am
-                                        </div>
-                                        <span class="view">
-											<i class="icon fa fa-eye" aria-hidden="true"></i>
-											631
-										</span>
-                                        <span class="comment">
-											<i class="icon fa fa-commenting" aria-hidden="true"></i>
-											84
-										</span>
-                                    </div>
-                                    <h2 class="blog-title">
-                                        <a href="{{route('blog')}}">Nicollection discount alert</a>
-                                    </h2>
-                                    <div class="main-info-post">
-                                        <p class="des">
-                                            New discount alert for for all majaor legue purchases.
-                                        </p>
-                                        <a class="readmore" href="{{route('blogdetails')}}">Read more</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="stelina-blog-item equal-element layout1">
-                                <div class="post-thumb">
-                                    <a href="#">
-                                    <img src="assets/images/slider-blog-thumb-4.jpg" alt="img">
-                                </a>
-                                    <div class="category-blog">
-                                        <ul class="list-category">
-                                            <li class="category-item">
-                                                <a href="#">Skincare</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="post-item-share">
-                                        <a href="#" class="icon">
-                                        <i class="fa fa-share-alt" aria-hidden="true"></i>
-                                    </a>
-                                        <div class="box-content">
-                                            <a href="#">
-                                            <i class="fa fa-facebook"></i>
-                                        </a>
-                                            <a href="#">
-                                            <i class="fa fa-twitter"></i>
-                                        </a>
-                                            <a href="#">
-                                            <i class="fa fa-google-plus"></i>
-                                        </a>
-                                            <a href="#">
-                                            <i class="fa fa-pinterest"></i>
-                                        </a>
-                                            <a href="#">
-                                            <i class="fa fa-linkedin"></i>
-                                        </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="blog-info">
-                                    <div class="blog-meta">
-                                        <div class="post-date">
-                                            Agust 17, 09:14 am
-                                        </div>
-                                        <span class="view">
-											<i class="icon fa fa-eye" aria-hidden="true"></i>
-											631
-										</span>
-                                        <span class="comment">
-											<i class="icon fa fa-commenting" aria-hidden="true"></i>
-											84
-										</span>
-                                    </div>
-                                    <h2 class="blog-title">
-                                        <a href="{{route('blog')}}">Chose whats best for you</a>
-                                    </h2>
-                                    <div class="main-info-post">
-                                        <p class="des">
-                                            Class defines you but nothing does it better than your scent 
-                                        </p>
-                                        <a class="readmore" href="{{route('blogdetails')}}">Read more</a>
-                                    </div>
-                                </div>
-                            </div>
+                            @endforeach
+
                         </div>
                     </div>
                 </div>

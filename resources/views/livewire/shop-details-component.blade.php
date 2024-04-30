@@ -9,10 +9,10 @@
                                 <a href="/">Home</a>
                             </li>
                             <li class="trail-item">
-                                <a href="#">For Him</a>
+                                <a href="{{ route('product.category',['category_slug' =>$product->category->slug]) }}">{{ $product->category->name }}</a>
                             </li>
                             <li class="trail-item trail-end active">
-                                Hugo
+                                {{ $product->name }}
                             </li>
                         </ul>
                     </div>
@@ -24,13 +24,13 @@
                         <div class="details-product">
                             <div class="details-thumd">
                                 <div class="image-preview-container image-thick-box image_preview_container">
-                                    <img id="img_zoom" data-zoom-image="assets/images/details-item-1.jpg" src="assets/images/details-item-1.jpg" alt="img">
+                                    <img id="img_zoom" data-zoom-image="{{ asset('image/products') }}/{{ $product->image }}" src="{{ asset('image/products') }}/{{ $product->image }}" alt="img">
                                     <a href="#" class="btn-zoom open_qv"><i class="fa fa-search" aria-hidden="true"></i></a>
                                 </div>
                                 <div class="product-preview image-small product_preview">
                                     <div id="thumbnails" class="thumbnails_carousel owl-carousel" data-nav="true" data-autoplay="false" data-dots="false" data-loop="false" data-margin="10" data-responsive='{"0":{"items":3},"480":{"items":3},"600":{"items":3},"1000":{"items":3}}'>
-                                        <a href="#" data-image="assets/images/details-item-1.jpg" data-zoom-image="assets/images/details-item-1.jpg" class="active">
-                                            <img src="assets/images/details-item-1.jpg" data-large-image="assets/images/details-item-1.jpg" alt="img">
+                                        <a href="#" data-image="{{ asset('image/products') }}/{{ $product->image }}" data-zoom-image="{{ asset('image/products') }}/{{ $product->image }}" class="active">
+                                            <img src="{{ asset('image/products') }}/{{ $product->image }}" data-large-image="{{ asset('image/products') }}/{{ $product->image }}" alt="img">
                                         </a>
                                         <a href="#" data-image="assets/images/details-item-2.jpg" data-zoom-image="assets/images/details-item-2.jpg">
                                             <img src="assets/images/details-item-2.jpg" data-large-image="assets/images/details-item-2.jpg" alt="img">
@@ -46,7 +46,7 @@
                             </div>
                             <div class="details-infor">
                                 <h1 class="product-title">
-                                    Hugo
+                                    {{ $product->name }}
                                 </h1>
                                 <div class="stars-rating">
                                     <div class="star-rating">
@@ -58,10 +58,10 @@
                                 </div>
                                 <div class="availability">
                                     availability:
-                                    <a href="#">in Stock</a>
+                                    <a href="#">{{ $product->stock_status }}</a>
                                 </div>
                                 <div class="price">
-                                    <span>UGX 25,000</span>
+                                    <span>UGx{{ $product->regular_price }}</span>
                                 </div>
                                 <div class="product-details-description">
                                     <ul>
@@ -82,7 +82,7 @@
                                             <a href="#" class="color4"></a>
                                         </div>
                                     </div>
-                                    <div class="attribute attribute_size">
+                                    {{-- <div class="attribute attribute_size">
                                         <div class="size-text text-attribute">
                                             Pots Size:
                                         </div>
@@ -94,12 +94,21 @@
                                             <a href="#" class="">xl</a>
                                             <a href="#" class="">xxl</a>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
+                                @php
+                                    $witem = Cart::instance('wishlist')->content()->pluck('id');
+                                    $citem = Cart::instance('cart')->content()->pluck('id');
+                                @endphp
                                 <div class="group-button">
                                     <div class="yith-wcwl-add-to-wishlist">
                                         <div class="yith-wcwl-add-button">
-                                            <a href="#">Add to Wishlist</a>
+                                            {{-- <a href="#">Add to Wishlist</a> --}}
+                                            @if ($witem->contains($product->id))
+                                            <button type="button"  style="background: rgb(210, 123, 0)" data-toggle="tooltip" class="btn btn-default wishlist" wire:click.prevent="removeFromWishlist({{ $product->id }})" title="Remove from Wishlist"><i class="fa fa-heart-o"></i>Remove from Wishlist</button>
+                                            @else
+                                            <button type="button"  data-toggle="tooltip" class="btn btn-default wishlist" wire:click.prevent="addToWishlist({{ $product->id }},'{{ $product->name }}',{{ $product->regular_price }})" title="Add to Wish List"><i class="fa fa-heart-o"></i>Add to Wishlist</button>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="size-chart-wrapp">
@@ -115,7 +124,13 @@
                                                 <a href="#" class="btn-number qtyplus quantity-plus">+</a>
                                             </div>
                                         </div>
-                                        <button class="single_add_to_cart_button button">Add to cart</button>
+                                        @if ($citem->contains($product->id))
+                                        <button type="button" id="button-cart" data-loading-text="Loading..." class="single_add_to_cart_button button" style="background: rgb(210, 123, 0)"  wire:click.prevent="removeFromCart({{ $product->id }})">Remove From Cart</button>
+                                        <a href="#" class="add-to-cart " ></a>
+                                        @else
+                                        <button type="button" id="button-cart" data-loading-text="Loading..." class="single_add_to_cart_button button" style="background: rgb(216, 216, 216); color:black;" wire:click.prevent="store({{ $product->id }},'{{ $product->name }}',{{ $product->regular_price }})">Add to Cart</button>
+                                        @endif
+                                        {{-- <button class="single_add_to_cart_button button">Add to cart</button> --}}
                                     </div>
                                 </div>
                             </div>
@@ -135,14 +150,14 @@
                             <div class="tab-container">
                                 <div id="product-descriptions" class="tab-panel active">
                                     <p>
-                                        Hugo is a blend of fresh and strong scent ment to
+                                        {{ $product->description }}
                                     </p>
-                                    <p>
+                                    {{-- <p>
                                         give you a confident look
-                                    </p>
+                                    </p> --}}
                                 </div>
                                 <div id="information" class="tab-panel">
-                                    <table class="table table-bordered">
+                                    {{-- <table class="table table-bordered">
                                         <tr>
                                             <td>Size</td>
                                             <td> XS / S / M / L </td>
@@ -155,7 +170,8 @@
                                             <td>Properties</td>
                                             <td>Colorful Dress</td>
                                         </tr>
-                                    </table>
+                                    </table> --}}
+                                    <p>{{ $product->short_description }}</p>
                                 </div>
                                 <div id="reviews" class="tab-panel">
                                     <div class="reviews-tab">
@@ -215,7 +231,7 @@
                                                         </div>
                                                         <p class="comment-form-comment">
                                                             <label>
-                                        						Your review 
+                                        						Your review
                                         						<span class="required">*</span>
                                         					</label>
                                                             <textarea title="review" id="comment" name="comment" cols="45" rows="8"></textarea>
@@ -249,6 +265,8 @@
                         <div class="related products product-grid">
                             <h2 class="product-grid-title">You may also like</h2>
                             <div class="owl-products owl-slick equal-container nav-center" data-slick='{"autoplay":false, "autoplaySpeed":1000, "arrows":true, "dots":false, "infinite":true, "speed":800, "rows":1}' data-responsive='[{"breakpoint":"2000","settings":{"slidesToShow":3}},{"breakpoint":"1200","settings":{"slidesToShow":2}},{"breakpoint":"992","settings":{"slidesToShow":2}},{"breakpoint":"480","settings":{"slidesToShow":1}}]'>
+                                @foreach ($popular_products as $popular_product)
+
                                 <div class="product-item style-1">
                                     <div class="product-inner equal-element">
                                         <div class="product-top">
@@ -262,26 +280,36 @@
                                         </div>
                                         <div class="product-thumb">
                                             <div class="thumb-inner">
-                                                <a href="{{route('wishlist')}}">
-													<img src="assets/images/product-item-1.jpg" alt="img">
+                                                <a href="{{ route('shop-details', ['slug'=>$popular_product->slug]) }}">
+													<img src="{{ asset('image/products') }}/{{ $popular_product->image }}" alt="{{ $popular_product->name }}">
 												</a>
                                                 <div class="thumb-group">
                                                     <div class="yith-wcwl-add-to-wishlist">
                                                         <div class="yith-wcwl-add-button">
-                                                            <a href="#">Add to Wishlist</a>
+                                                            @if ($witem->contains($popular_product->id))
+                                                            <a href="#" style="color: rgb(210, 123, 0)" wire:click.prevent="removeFromWishlist({{ $popular_product->id }})">Remove From Wishlist</a>
+                                                            @else
+                                                            <a href="#" wire:click.prevent="addToWishlist({{ $popular_product->id }},'{{ $popular_product->name }}',{{ $popular_product->regular_price }})">Add to Wishlist</a>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                     <a href="#" class="button quick-wiew-button">Quick View</a>
                                                     <div class="loop-form-add-to-cart">
-                                                        <button class="single_add_to_cart_button button">Add to cart
-														</button>
+                                                        @if ($citem->contains($popular_product->id))
+                                                        <button type="button" id="button-cart" data-loading-text="Loading..." class="single_add_to_cart_button button" style="color: rgb(210, 123, 0)"  wire:click.prevent="removeFromCart({{ $popular_product->id }})">Remove From Cart</button>
+                                                        <a href="#" class="add-to-cart " ></a>
+                                                        @else
+                                                        <button type="button" id="button-cart" data-loading-text="Loading..." class="single_add_to_cart_button button"  wire:click.prevent="store({{ $popular_product->id }},'{{ $popular_product->name }}',{{ $popular_product->regular_price }})">Add to Cart</button>
+                                                        @endif
+                                                        {{-- <button class="single_add_to_cart_button button">Add to cart
+														</button> --}}
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="product-info">
                                             <h5 class="product-name product_title">
-                                                <a href="#">Paris</a>
+                                                <a href="{{ route('shop-details', ['slug'=>$popular_product->slug]) }}">{{ $popular_product->name }}</a>
                                             </h5>
                                             <div class="group-info">
                                                 <div class="stars-rating">
@@ -293,182 +321,22 @@
                                                     </div>
                                                 </div>
                                                 <div class="price">
+                                                    @if ( $popular_product->sale_price )
                                                     <del>
-														UGX 30,000
-													</del>
+                                                        UGx{{ $popular_product->sale_price }}
+                                                    </del>
+                                                    @endif
+
                                                     <ins>
-														UGX 28,000
-													</ins>
+                                                        UGx{{ $popular_product->regular_price }}
+                                                    </ins>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="product-item style-1">
-                                    <div class="product-inner equal-element">
-                                        <div class="product-top">
-                                            <div class="flash">
-                                                <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="product-thumb">
-                                            <div class="thumb-inner">
-                                                <a href="{{route('wishlist')}}">
-													<img src="assets/images/product-item-2.jpg" alt="img">
-												</a>
-                                                <div class="thumb-group">
-                                                    <div class="yith-wcwl-add-to-wishlist">
-                                                        <div class="yith-wcwl-add-button">
-                                                            <a href="#">Add to Wishlist</a>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                    <div class="loop-form-add-to-cart">
-                                                        <button class="single_add_to_cart_button button">Add to cart
-														</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product-info">
-                                            <h5 class="product-name product_title">
-                                                <a href="#">Rossa</a>
-                                            </h5>
-                                            <div class="group-info">
-                                                <div class="stars-rating">
-                                                    <div class="star-rating">
-                                                        <span class="star-3"></span>
-                                                    </div>
-                                                    <div class="count-star">
-                                                        (3)
-                                                    </div>
-                                                </div>
-                                                <div class="price">
-                                                    <del>
-														UGX 35,000
-													</del>
-                                                    <ins>
-														UGX 25,000
-													</ins>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="product-item style-1">
-                                    <div class="product-inner equal-element">
-                                        <div class="product-top">
-                                            <div class="flash">
-                                                <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="product-thumb">
-                                            <div class="thumb-inner">
-                                                <a href="{{route('wishlist')}}">
-													<img src="assets/images/product-item-3.jpg" alt="img">
-												</a>
-                                                <div class="thumb-group">
-                                                    <div class="yith-wcwl-add-to-wishlist">
-                                                        <div class="yith-wcwl-add-button">
-                                                            <a href="#">Add to Wishlist</a>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                    <div class="loop-form-add-to-cart">
-                                                        <button class="single_add_to_cart_button button">Add to cart
-														</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product-info">
-                                            <h5 class="product-name product_title">
-                                                <a href="#">Polo</a>
-                                            </h5>
-                                            <div class="group-info">
-                                                <div class="stars-rating">
-                                                    <div class="star-rating">
-                                                        <span class="star-3"></span>
-                                                    </div>
-                                                    <div class="count-star">
-                                                        (3)
-                                                    </div>
-                                                </div>
-                                                <div class="price">
-                                                    <del>
-														UGX 35,000
-													</del>
-                                                    <ins>
-														UGX 30,000
-													</ins>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="product-item style-1">
-                                    <div class="product-inner equal-element">
-                                        <div class="product-top">
-                                            <div class="flash">
-                                                <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="product-thumb">
-                                            <div class="thumb-inner">
-                                                <a href="{{route('wishlist')}}">
-													<img src="assets/images/product-item-4.jpg" alt="img">
-												</a>
-                                                <div class="thumb-group">
-                                                    <div class="yith-wcwl-add-to-wishlist">
-                                                        <div class="yith-wcwl-add-button">
-                                                            <a href="#">Add to Wishlist</a>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                    <div class="loop-form-add-to-cart">
-                                                        <button class="single_add_to_cart_button button">Add to cart
-														</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product-info">
-                                            <h5 class="product-name product_title">
-                                                <a href="#">Prada</a>
-                                            </h5>
-                                            <div class="group-info">
-                                                <div class="stars-rating">
-                                                    <div class="star-rating">
-                                                        <span class="star-3"></span>
-                                                    </div>
-                                                    <div class="count-star">
-                                                        (3)
-                                                    </div>
-                                                </div>
-                                                <div class="price">
-                                                    <del>
-														UGX 40,000
-													</del>
-                                                    <ins>
-														UGX 35,000
-													</ins>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                @endforeach
+
                             </div>
                         </div>
                     </div>
@@ -490,12 +358,17 @@
 										For Him
 									</label>
                                 </li>
-                              
+
                             </ul>
                         </div>
                         <div class="widget widget-related-products">
                             <h3 class="widgettitle">Related Products</h3>
                             <div class="slider-related-products owl-slick nav-top-right equal-container" data-slick='{"autoplay":false, "autoplaySpeed":1000, "arrows":true, "dots":false, "infinite":true, "speed":800, "rows":1}' data-responsive='[{"breakpoint":"2000","settings":{"slidesToShow":1 }},{"breakpoint":"992","settings":{"slidesToShow":2}}]'>
+                                @foreach ($related_products as $related_product)
+                                {{-- @php
+                                    $witem = Cart::instance('wishlist')->content()->pluck('id');
+                                    $citem = Cart::instance('cart')->content()->pluck('id');
+                                @endphp --}}
                                 <div class="product-item style-1">
                                     <div class="product-inner equal-element">
                                         <div class="product-top">
@@ -509,26 +382,41 @@
                                         </div>
                                         <div class="product-thumb">
                                             <div class="thumb-inner">
-                                                <a href="{{route('wishlist')}}">
-													<img src="assets/images/product-item-1.jpg" alt="img">
+                                                <a href="{{ route('shop-details', ['slug'=>$related_product->slug]) }}">
+													<img src="{{ asset('image/products') }}/{{ $related_product->image }}" alt="{{ $related_product->name }}">
 												</a>
                                                 <div class="thumb-group">
                                                     <div class="yith-wcwl-add-to-wishlist">
                                                         <div class="yith-wcwl-add-button">
-                                                            <a href="#">Add to Wishlist</a>
+                                                            {{-- <a href="#">Add to Wishlist</a> --}}
+                                                            @if ($witem->contains($related_product->id))
+                                                            {{-- <button type="button"  style="color: rgb(210, 123, 0)" data-toggle="tooltip" class="btn btn-default wishlist" wire:click.prevent="removeFromWishlist({{ $product->id }})" title="Remove from Wishlist"><i class="fa fa-heart-o"></i></button> --}}
+                                                            <a href="#" style="color: rgb(210, 123, 0)" wire:click.prevent="removeFromWishlist({{ $related_product->id }})">Remove From Wishlist</a>
+
+                                                            @else
+                                                            <a href="#" wire:click.prevent="addToWishlist({{ $related_product->id }},'{{ $related_product->name }}',{{ $related_product->regular_price }})">Add to Wishlist</a>
+
+                                                            {{-- <button type="button"  data-toggle="tooltip" class="btn btn-default wishlist" wire:click.prevent="addToWishlist({{ $product->id }},'{{ $product->name }}',{{ $product->regular_price }})" title="Add to Wish List"><i class="fa fa-heart-o"></i></button> --}}
+                                                            @endif
                                                         </div>
                                                     </div>
                                                     <a href="#" class="button quick-wiew-button">Quick View</a>
                                                     <div class="loop-form-add-to-cart">
-                                                        <button class="single_add_to_cart_button button">Add to cart
-														</button>
+                                                        @if ($citem->contains($product->id))
+                                                        <button type="button" id="button-cart" data-loading-text="Loading..." class="single_add_to_cart_button button" style="color: rgb(210, 123, 0)"  wire:click.prevent="removeFromCart({{ $related_product->id }})">Remove From Cart</button>
+                                                        <a href="#" class="add-to-cart " ></a>
+                                                        @else
+                                                        <button type="button" id="button-cart" data-loading-text="Loading..." class="single_add_to_cart_button button"  wire:click.prevent="store({{ $related_product->id }},'{{ $related_product->name }}',{{ $related_product->regular_price }})">Add to Cart</button>
+                                                        @endif
+                                                        {{-- <button class="single_add_to_cart_button button">Add to cart
+														</button> --}}
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="product-info">
                                             <h5 class="product-name product_title">
-                                                <a href="#">Lacoste</a>
+                                                <a href="{{ route('shop-details', ['slug'=>$related_product->slug]) }}">{{ $related_product->name }}</a>
                                             </h5>
                                             <div class="group-info">
                                                 <div class="stars-rating">
@@ -540,73 +428,24 @@
                                                     </div>
                                                 </div>
                                                 <div class="price">
-                                                    <del>
-														UGX 40,000
-													</del>
+                                                    @if ( $related_product->sale_price )
+                                                        <del>
+                                                            UGx{{ $related_product->sale_price }}
+                                                        </del>
+                                                    @endif
+
                                                     <ins>
-													    UGX 35,000
+														UGx{{ $related_product->regular_price }}
 													</ins>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="product-item style-1">
-                                    <div class="product-inner equal-element">
-                                        <div class="product-top">
-                                            <div class="flash">
-                                                <span class="onnew">
-														<span class="text">
-															new
-														</span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="product-thumb">
-                                            <div class="thumb-inner">
-                                                <a href="{{route('wishlist')}}">
-													<img src="assets/images/product-item-2.jpg" alt="img">
-												</a>
-                                                <div class="thumb-group">
-                                                    <div class="yith-wcwl-add-to-wishlist">
-                                                        <div class="yith-wcwl-add-button">
-                                                            <a href="#">Add to Wishlist</a>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" class="button quick-wiew-button">Quick View</a>
-                                                    <div class="loop-form-add-to-cart">
-                                                        <button class="single_add_to_cart_button button">Add to cart
-														</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="product-info">
-                                            <h5 class="product-name product_title">
-                                                <a href="#">Creed Aventis</a>
-                                            </h5>
-                                            <div class="group-info">
-                                                <div class="stars-rating">
-                                                    <div class="star-rating">
-                                                        <span class="star-3"></span>
-                                                    </div>
-                                                    <div class="count-star">
-                                                        (3)
-                                                    </div>
-                                                </div>
-                                                <div class="price">
-                                                    <del>
-														UGX 35,000
-													</del>
-                                                    <ins>
-														UGX 30,000
-													</ins>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                @endforeach
+
                             </div>
+
                         </div>
                         <div class="widget widget-testimonials">
                             <h3 class="widgettitle">Testimonials</h3>

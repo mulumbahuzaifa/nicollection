@@ -21,28 +21,29 @@
                         Our Blog
                     </h3>
                     <div class="blog-list list-style">
+                        @foreach ($blogs as $blog)
                         <div class="blog-item">
                             <div class="post-format">
-                                <a href="{{route('blogdetails')}}">
-                                    <img src="assets/images/blog-item-list-1.jpg" alt="img">
+                                <a href="{{ route('blog.details', ['slug' => $blog->slug]) }}">
+                                    <img src="{{ asset('image/blogs') }}/{{ $blog->image }}" alt="{{ $blog->title }}">
                                 </a>
                             </div>
                             <div class="post-info">
                                 <div class="category-blog">
-                                    <a href="#">ACCESSORIES</a>
+                                    <a href="#">{{ $blog->category }} - <span>{{ $blog->created_at }}</span></a>
                                 </div>
                                 <h3 class="post-title">
-                                    <a href="{{route('blogdetails')}}">Nicollection does it best<span>[...]</span></a>
+                                    <a href="{{ route('blog.details', ['slug' => $blog->slug]) }}">{{ $blog->title }}<span>[...]</span></a>
                                 </h3>
                                 <div class="main-info-post">
                                     <p class="des">
-                                        Sit tight and let us share some tips on how to apply fragrance[...]
+                                        {{ str_limit(strip_tags($blog->description),200,'...')  }}
                                     </p>
                                 </div>
                                 <div class="author-view">
                                     <div class="author">
                                         <div class="avt">
-                                            <img src="assets/images/avt-blog1.png" alt="img">
+                                            <img src="{{ asset('assets/images/avt-blog1.png') }}" alt="img">
                                         </div>
                                         <h3 class="name">
                                             Nicole
@@ -69,206 +70,17 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="blog-item">
-                            <div class="post-format">
-                                <a href="{{route('blogdetails')}}">
-                                    <img src="assets/images/blog-item-list-2.jpg" alt="img">
-                                </a>
-                            </div>
-                            <div class="post-info">
-                                <div class="category-blog">
-                                    <a href="#">CLOTHING</a>
-                                </div>
-                                <h3 class="post-title">
-                                    <a href="{{route('blogdetails')}}">Good Scent will land you that date,trust me<span>[...]</span></a>
-                                </h3>
-                                <div class="main-info-post">
-                                    <p class="des">
-                                        Say no more to lonely nights and cold pillows
-                                    </p>
-                                </div>
-                                <div class="author-view">
-                                    <div class="author">
-                                        <div class="avt">
-                                            <img src="assets/images/avt-blog1.png" alt="img">
-                                        </div>
-                                        <h3 class="name">
-                                            Nicole
-                                        </h3>
-                                    </div>
-                                    <div class="review">
-                                        <div class="view">
-                                            <span class="icon-view">
-                                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                            </span>
-                                            <span class="count">
-                                                631
-                                            </span>
-                                        </div>
-                                        <div class="s-comments">
-                                            <span class="icon-cmt">
-                                                <i class="fa fa-commenting" aria-hidden="true"></i>
-                                            </span>
-                                            <span class="count">
-                                                82
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="blog-item">
-                            <div class="post-format">
-                                <a href="{{route('blogdetails')}}">
-                                    <img src="assets/images/blog-item-list-3.jpg" alt="img">
-                                </a>
-                            </div>
-                            <div class="post-info">
-                                <div class="category-blog">
-                                    <a href="#">Discount</a>
-                                </div>
-                                <h3 class="post-title">
-                                    <a href="{{route('blogdetails')}}">Nicollection discount alert<span>[...]</span></a>
-                                </h3>
-                                <div class="main-info-post">
-                                    <p class="des">
-                                        New discount alert for for all majaor legue purchases[...]
-                                    </p>
-                                </div>
-                                <div class="author-view">
-                                    <div class="author">
-                                        <div class="avt">
-                                            <img src="assets/images/avt-blog1.png" alt="img">
-                                        </div>
-                                        <h3 class="name">
-                                           Nicole
-                                        </h3>
-                                    </div>
-                                    <div class="review">
-                                        <div class="view">
-                                            <span class="icon-view">
-                                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                            </span>
-                                            <span class="count">
-                                                631
-                                            </span>
-                                        </div>
-                                        <div class="s-comments">
-                                            <span class="icon-cmt">
-                                                <i class="fa fa-commenting" aria-hidden="true"></i>
-                                            </span>
-                                            <span class="count">
-                                                82
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="blog-item">
-                            <div class="post-format">
-                                <a href="{{route('blogdetails')}}">
-                                    <img src="assets/images/blog-item-list-4.jpg" alt="img">
-                                </a>
-                            </div>
-                            <div class="post-info">
-                                <div class="category-blog">
-                                    <a href="#">LIFE STYLE</a>
-                                </div>
-                                <h3 class="post-title">
-                                    <a href="{{route('blogdetails')}}">Choose whats best for you<span>[...]</span></a>
-                                </h3>
-                                <div class="main-info-post">
-                                    <p class="des">
-                                        Class defines you but nothing does it better than your scent
-                                    </p>
-                                </div>
-                                <div class="author-view">
-                                    <div class="author">
-                                        <div class="avt">
-                                            <img src="assets/images/avt-blog1.png" alt="img">
-                                        </div>
-                                        <h3 class="name">
-                                            Nicole
-                                        </h3>
-                                    </div>
-                                    <div class="review">
-                                        <div class="view">
-                                            <span class="icon-view">
-                                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                            </span>
-                                            <span class="count">
-                                                631
-                                            </span>
-                                        </div>
-                                        <div class="s-comments">
-                                            <span class="icon-cmt">
-                                                <i class="fa fa-commenting" aria-hidden="true"></i>
-                                            </span>
-                                            <span class="count">
-                                                82
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="blog-item">
-                            <div class="post-format">
-                                <a href="{{route('blogdetails')}}">
-                                    <img src="assets/images/blog-item-list-5.jpg" alt="img">
-                                </a>
-                            </div>
-                            <div class="post-info">
-                                <div class="category-blog">
-                                    <a href="#">LIFE STYLE</a>
-                                </div>
-                                <h3 class="post-title">
-                                    <a href="{{route('blogdetails')}}">Want to stand out? <span>[...]</span></a>
-                                </h3>
-                                <div class="main-info-post">
-                                    <p class="des">
-                                        Take a look at our rare and exlusive collection
-                                    </p>
-                                </div>
-                                <div class="author-view">
-                                    <div class="author">
-                                        <div class="avt">
-                                            <img src="assets/images/avt-blog1.png" alt="img">
-                                        </div>
-                                        <h3 class="name">
-                                            Nicole
-                                        </h3>
-                                    </div>
-                                    <div class="review">
-                                        <div class="view">
-                                            <span class="icon-view">
-                                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                            </span>
-                                            <span class="count">
-                                                631
-                                            </span>
-                                        </div>
-                                        <div class="s-comments">
-                                            <span class="icon-cmt">
-                                                <i class="fa fa-commenting" aria-hidden="true"></i>
-                                            </span>
-                                            <span class="count">
-                                                82
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                     <div class="pagination clearfix style2">
                         <div class="nav-link">
-                            <a href="#" class="page-numbers"><i class="icon fa fa-angle-left" aria-hidden="true"></i></a>
+                            {{ $blogs->links('pagination::bootstrap-4') }}
+
+                            {{-- <a href="#" class="page-numbers"><i class="icon fa fa-angle-left" aria-hidden="true"></i></a>
                             <a href="#" class="page-numbers">1</a>
                             <a href="#" class="page-numbers">2</a>
                             <a href="#" class="page-numbers current">3</a>
-                            <a href="#" class="page-numbers"><i class="icon fa fa-angle-right" aria-hidden="true"></i></a>
+                            <a href="#" class="page-numbers"><i class="icon fa fa-angle-right" aria-hidden="true"></i></a> --}}
                         </div>
                     </div>
                 </div>
@@ -296,39 +108,20 @@
                     <div class="widget widget-post">
                         <h3 class="widgettitle">Popular Articles</h3>
                         <ul class="stelina-posts">
+                            @foreach ($l_blogs as $blog)
+
                             <li class="widget-post-item">
                                 <div class="thumb-blog">
-                                    <img src="assets/images/sidebar-post1.jpg" alt="img">
+                                    <img src="{{ asset('image/blogs') }}/{{ $blog->image }}" alt="{{ $blog->title }}">
                                 </div>
                                 <div class="post-content">
                                     <div class="cat">
-                                        <a href="{{route('blogdetails')}}">Life Style</a>
+                                        <a href="#">{{ $blog->category }}</a>
                                     </div>
-                                    <h5 class="post-title"><a href="{{route('blogdetails')}}">9 Quicks Tips That Will Change your scent game <span>[...]</span></a></h5>
+                                    <h5 class="post-title"><a href="{{ route('blog.details', ['slug' => $blog->slug]) }}">{{ $blog->title }} <span>[...]</span></a></h5>
                                 </div>
                             </li>
-                            <li class="widget-post-item">
-                                <div class="thumb-blog">
-                                    <img src="assets/images/sidebar-post2.jpg" alt="img">
-                                </div>
-                                <div class="post-content">
-                                    <div class="cat">
-                                        <a href="{{route('blogdetails')}}">Look book</a>
-                                    </div>
-                                    <h5 class="post-title"><a href="{{route('blogdetails')}}">Stand out with your scent<span>[...]</span></a></h5>
-                                </div>
-                            </li>
-                            <li class="widget-post-item">
-                                <div class="thumb-blog">
-                                    <img src="assets/images/sidebar-post3.jpg" alt="img">
-                                </div>
-                                <div class="post-content">
-                                    <div class="cat">
-                                        <a href="{{route('blogdetails')}}">Street Style</a>
-                                    </div>
-                                    <h5 class="post-title"><a href="{{route('blogdetails')}}">Good Scent will land you that date,trust me<span>[...]</span></a></h5>
-                                </div>
-                            </li>
+                            @endforeach
 
                         </ul>
                     </div>
@@ -373,7 +166,7 @@
                             </li> --}}
                         </ul>
                     </div>
-                    
+
                     <div class="widget widget-tags">
                         <h3 class="widgettitle">
                             Popular Tags
